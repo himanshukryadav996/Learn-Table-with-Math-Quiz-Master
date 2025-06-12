@@ -23,7 +23,7 @@ An interactive web-based math quiz covering multiplication tables, squares, cube
 
 ## Live Demo
 
-Visit: [Your GitHub Pages URL will go here]
+Visit: https://himanshukryadav996.github.io/Learn-Table-with-Math-Quiz-Master/
 
 ## Technologies Used
 
