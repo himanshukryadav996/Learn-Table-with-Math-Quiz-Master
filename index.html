@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Quiz - Tables, Squares, Cubes & Powers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-selection {
+            margin-bottom: 30px;
+        }
+
+        .category-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            margin: 10px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .category-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .category-btn.active {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E8E);
+        }
+
+        .quiz-section {
+            display: none;
+        }
+
+        .quiz-section.active {
+            display: block;
+        }
+
+        .question {
+            font-size: 2em;
+            color: #333;
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            border-radius: 15px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .answer-input {
+            font-size: 1.5em;
+            padding: 15px;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            width: 200px;
+            text-align: center;
+            margin: 20px;
+            transition: border-color 0.3s ease;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .next-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .feedback {
+            font-size: 1.2em;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(45deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(45deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .score {
+            font-size: 1.3em;
+            color: #333;
+            margin: 20px 0;
+            padding: 15px;
+            background: linear-gradient(45deg, #fff3cd, #ffeaa7);
+            border-radius: 10px;
+            border: 2px solid #ffeaa7;
+        }
+
+        .progress {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .question {
+                font-size: 1.5em;
+            }
+            
+            .answer-input {
+                width: 150px;
+                font-size: 1.2em;
+            }
+            
+            .category-btn {
+                padding: 12px 20px;
+                font-size: 14px;
+                margin: 5px;
+            }
+
+            .values-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 8px;
+            }
+
+            .table-container {
+                min-width: 250px;
+            }
+        }
+
+        /* Learn Section Styles */
+        .learn-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 3px solid #667eea;
+        }
+
+        .learn-section h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 2em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .learn-categories {
+            margin-bottom: 30px;
+        }
+
+        .learn-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin: 8px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .learn-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .learn-btn.active {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E8E);
+        }
+
+        .learn-content {
+            display: none;
+            text-align: left;
+        }
+
+        .learn-content.active {
+            display: block;
+        }
+
+        .learn-content h3 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .value-item {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #dee2e6;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .value-item:hover {
+            transform: scale(1.05);
+            background: linear-gradient(45deg, #e3f2fd, #bbdefb);
+            border-color: #667eea;
+        }
+
+        .tables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .table-container {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #dee2e6;
+        }
+
+        .table-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .table-item {
+            padding: 8px;
+            text-align: center;
+            background: white;
+            border-radius: 5px;
+            font-size: 0.9em;
+            border: 1px solid #ddd;
+            transition: all 0.2s ease;
+        }
+
+        .table-item:hover {
+            background: linear-gradient(45deg, #e3f2fd, #bbdefb);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧮 Math Quiz Master</h1>
+        
+        <div class="category-selection">
+            <button class="category-btn active" onclick="selectCategory('tables')">Multiplication Tables</button>
+            <button class="category-btn" onclick="selectCategory('squares')">Squares (1-40)</button>
+            <button class="category-btn" onclick="selectCategory('cubes')">Cubes (1-23)</button>
+            <button class="category-btn" onclick="selectCategory('power4')">Power of 4 (1-12)</button>
+        </div>
+
+        <div class="score">
+            Score: <span id="score">0</span> / <span id="total">0</span> 
+            | Accuracy: <span id="accuracy">0%</span>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="quiz-section active" id="quiz">
+            <div class="question" id="question">Click a category to start!</div>
+            <input type="number" class="answer-input" id="answerInput" placeholder="Enter answer" style="display: none;">
+            <br>
+            <button class="submit-btn" id="submitBtn" onclick="checkAnswer()" style="display: none;">Submit Answer</button>
+            <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question</button>
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <!-- Learn Section -->
+        <div class="learn-section">
+            <h2>📚 Learn & Reference</h2>
+            <div class="learn-categories">
+                <button class="learn-btn active" onclick="showLearnCategory('learn-tables')">Multiplication Tables</button>
+                <button class="learn-btn" onclick="showLearnCategory('learn-squares')">Squares (1-40)</button>
+                <button class="learn-btn" onclick="showLearnCategory('learn-cubes')">Cubes (1-23)</button>
+                <button class="learn-btn" onclick="showLearnCategory('learn-power4')">Power of 4 (1-12)</button>
+            </div>
+
+            <!-- Multiplication Tables -->
+            <div class="learn-content active" id="learn-tables">
+                <h3>🔢 Multiplication Tables (1-20, 22, 36)</h3>
+                <div class="tables-grid" id="tablesGrid"></div>
+            </div>
+
+            <!-- Squares -->
+            <div class="learn-content" id="learn-squares">
+                <h3>⬜ Squares (1² to 40²)</h3>
+                <div class="values-grid" id="squaresGrid"></div>
+            </div>
+
+            <!-- Cubes -->
+            <div class="learn-content" id="learn-cubes">
+                <h3>🧊 Cubes (1³ to 23³)</h3>
+                <div class="values-grid" id="cubesGrid"></div>
+            </div>
+
+            <!-- Power of 4 -->
+            <div class="learn-content" id="learn-power4">
+                <h3>⚡ Power of 4 (1⁴ to 12⁴)</h3>
+                <div class="values-grid" id="power4Grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentCategory = 'tables';
+        let currentQuestion = {};
+        let score = 0;
+        let totalQuestions = 0;
+        let questionsInRound = 10;
+        let currentRound = 0;
+
+        // Define ranges for each category
+        const categories = {
+            tables: {
+                name: 'Multiplication Tables',
+                ranges: [
+                    {min: 1, max: 20, base: 'table'},
+                    {min: 22, max: 22, base: 'table'},
+                    {min: 36, max: 36, base: 'table'}
+                ]
+            },
+            squares: {
+                name: 'Squares',
+                ranges: [{min: 1, max: 40, base: 'square'}]
+            },
+            cubes: {
+                name: 'Cubes',
+                ranges: [{min: 1, max: 23, base: 'cube'}]
+            },
+            power4: {
+                name: 'Power of 4',
+                ranges: [{min: 1, max: 12, base: 'power4'}]
+            }
+        };
+
+        function selectCategory(category) {
+            currentCategory = category;
+            score = 0;
+            totalQuestions = 0;
+            currentRound = 0;
+            
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Show input and buttons
+            document.getElementById('answerInput').style.display = 'inline-block';
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            updateScore();
+            generateQuestion();
+        }
+
+        function generateQuestion() {
+            const categoryData = categories[currentCategory];
+            const ranges = categoryData.ranges;
+            
+            // Select random range
+            const range = ranges[Math.floor(Math.random() * ranges.length)];
+            const number = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+            
+            let questionText = '';
+            let correctAnswer = 0;
+            
+            switch (range.base) {
+                case 'table':
+                    const multiplier = Math.floor(Math.random() * 12) + 1;
+                    questionText = `${number} × ${multiplier} = ?`;
+                    correctAnswer = number * multiplier;
+                    break;
+                case 'square':
+                    questionText = `${number}² = ?`;
+                    correctAnswer = number * number;
+                    break;
+                case 'cube':
+                    questionText = `${number}³ = ?`;
+                    correctAnswer = number * number * number;
+                    break;
+                case 'power4':
+                    questionText = `${number}⁴ = ?`;
+                    correctAnswer = Math.pow(number, 4);
+                    break;
+            }
+            
+            currentQuestion = {
+                text: questionText,
+                answer: correctAnswer
+            };
+            
+            document.getElementById('question').textContent = questionText;
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').focus();
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        function checkAnswer() {
+            const userAnswer = parseInt(document.getElementById('answerInput').value);
+            const feedback = document.getElementById('feedback');
+            const submitBtn = document.getElementById('submitBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            totalQuestions++;
+            
+            if (userAnswer === currentQuestion.answer) {
+                score++;
+                feedback.textContent = `🎉 Correct! ${currentQuestion.text.replace('?', userAnswer)}`;
+                feedback.className = 'feedback correct';
+            } else {
+                feedback.textContent = `❌ Incorrect. ${currentQuestion.text.replace('?', currentQuestion.answer)}`;
+                feedback.className = 'feedback incorrect';
+            }
+            
+            feedback.style.display = 'block';
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'inline-block';
+            
+            updateScore();
+            updateProgress();
+        }
+
+        function nextQuestion() {
+            currentRound++;
+            if (currentRound < questionsInRound) {
+                generateQuestion();
+            } else {
+                // Show final score
+                const accuracy = Math.round((score / totalQuestions) * 100);
+                document.getElementById('question').innerHTML = `
+                    🏆 Round Complete!<br>
+                    Final Score: ${score}/${totalQuestions}<br>
+                    Accuracy: ${accuracy}%<br>
+                    <small>Select a category to start a new round!</small>
+                `;
+                document.getElementById('answerInput').style.display = 'none';
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('feedback').style.display = 'none';
+            }
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = totalQuestions;
+            const accuracy = totalQuestions > 0 ? Math.round((score / totalQuestions) * 100) : 0;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+        }
+
+        function updateProgress() {
+            const progress = (currentRound / questionsInRound) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Allow Enter key to submit answer
+        document.getElementById('answerInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                if (document.getElementById('submitBtn').style.display !== 'none') {
+                    checkAnswer();
+                } else if (document.getElementById('nextBtn').style.display !== 'none') {
+                    nextQuestion();
+                }
+            }
+        });
+
+        // Initialize
+        updateScore();
+        generateLearnContent();
+
+        // Learn section functions
+        function showLearnCategory(categoryId) {
+            // Update active button
+            document.querySelectorAll('.learn-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Show selected content
+            document.querySelectorAll('.learn-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(categoryId).classList.add('active');
+        }
+
+        function generateLearnContent() {
+            generateTablesContent();
+            generateSquaresContent();
+            generateCubesContent();
+            generatePower4Content();
+        }
+
+        function generateTablesContent() {
+            const tablesGrid = document.getElementById('tablesGrid');
+            const tableNumbers = [];
+            
+            // Add tables 1-20
+            for (let i = 1; i <= 20; i++) {
+                tableNumbers.push(i);
+            }
+            // Add tables 22 and 36
+            tableNumbers.push(22, 36);
+
+            tableNumbers.forEach(num => {
+                const tableContainer = document.createElement('div');
+                tableContainer.className = 'table-container';
+                
+                const title = document.createElement('div');
+                title.className = 'table-title';
+                title.textContent = `Table of ${num}`;
+                tableContainer.appendChild(title);
+
+                // Create table rows (3 rows of 4 items each for 1-12)
+                for (let row = 0; row < 3; row++) {
+                    const tableRow = document.createElement('div');
+                    tableRow.className = 'table-row';
+                    
+                    for (let col = 1; col <= 4; col++) {
+                        const multiplier = row * 4 + col;
+                        if (multiplier <= 12) {
+                            const item = document.createElement('div');
+                            item.className = 'table-item';
+                            item.textContent = `${num} × ${multiplier} = ${num * multiplier}`;
+                            tableRow.appendChild(item);
+                        }
+                    }
+                    tableContainer.appendChild(tableRow);
+                }
+                tablesGrid.appendChild(tableContainer);
+            });
+        }
+
+        function generateSquaresContent() {
+            const squaresGrid = document.getElementById('squaresGrid');
+            for (let i = 1; i <= 40; i++) {
+                const item = document.createElement('div');
+                item.className = 'value-item';
+                item.textContent = `${i}² = ${i * i}`;
+                squaresGrid.appendChild(item);
+            }
+        }
+
+        function generateCubesContent() {
+            const cubesGrid = document.getElementById('cubesGrid');
+            for (let i = 1; i <= 23; i++) {
+                const item = document.createElement('div');
+                item.className = 'value-item';
+                item.textContent = `${i}³ = ${i * i * i}`;
+                cubesGrid.appendChild(item);
+            }
+        }
+
+        function generatePower4Content() {
+            const power4Grid = document.getElementById('power4Grid');
+            for (let i = 1; i <= 12; i++) {
+                const item = document.createElement('div');
+                item.className = 'value-item';
+                item.textContent = `${i}⁴ = ${Math.pow(i, 4)}`;
+                power4Grid.appendChild(item);
+            }
+        }
+    </script>
+</body>
+</html>
